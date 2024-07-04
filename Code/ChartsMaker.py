@@ -143,8 +143,8 @@ colors = [color_palette[desc] for desc in thematic_df['Description']]
 # Bar Chart for Thematic Analysis (Grouped) using Seaborn
 plt.figure(figsize=(14, 10))
 ax1 = sns.barplot(data=thematic_df, x='Theme', y='Count of Participants', hue='Description', palette=color_palette, dodge=True, width=0.6)
-plt.title('Thematic Analysis of Hybrid Meetings', fontsize=14)
-plt.xlabel('Theme', fontsize=12)
+plt.title('What do participants feel about Hybrid Meetings', fontsize=14)
+plt.xlabel('Major Themes', fontsize=12)
 plt.ylabel('Count of Participants', fontsize=12)
 plt.yticks(range(0, int(thematic_df['Count of Participants'].max()) + 2, 1))
 plt.xticks(rotation=45, ha='right')
