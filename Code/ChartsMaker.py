@@ -1,5 +1,6 @@
 import pandas as pd
 import matplotlib.pyplot as plt
+import seaborn as sns
 
 # Data for demographic table
 demographic_data = {
@@ -133,16 +134,19 @@ def create_custom_legend(ax, data, title, use_theme=True):
     
     ax.legend(handles, labels, loc='upper left', bbox_to_anchor=(1,1), title=title)
 
-# Bar Chart for Thematic Analysis
+# Sort thematic_df by Theme and Description to match the legend order
+thematic_df = thematic_df.sort_values(by=["Theme", "Description"])
+
+# Convert the color palette to a list for consistent coloring
+colors = [color_palette[desc] for desc in thematic_df['Description']]
+
+# Bar Chart for Thematic Analysis (Grouped) using Seaborn
 plt.figure(figsize=(14, 10))
-thematic_grouped = thematic_df.groupby(['Theme', 'Description'])['Count of Participants'].sum().unstack().fillna(0)
-thematic_colors = [color_palette[desc] for desc in thematic_grouped.columns]
-ax1 = thematic_grouped.plot(kind='bar', stacked=True, color=thematic_colors, figsize=(14, 12))
-plt.title('Thematic Analysis of Hybrid Meetings', fontsize=12)
+ax1 = sns.barplot(data=thematic_df, x='Theme', y='Count of Participants', hue='Description', palette=color_palette, dodge=True, width=0.6)
+plt.title('Thematic Analysis of Hybrid Meetings', fontsize=14)
 plt.xlabel('Theme', fontsize=12)
-plt.ylabel('Count of Participants', fontsize=10)
-plt.yticks(range(0, int(thematic_grouped.values.max().sum()) + 2, 1))  # Adjusting the y-ticks to show full scale
-plt.ylim(0, int(thematic_grouped.values.max().sum()) + 1)
+plt.ylabel('Count of Participants', fontsize=12)
+plt.yticks(range(0, int(thematic_df['Count of Participants'].max()) + 2, 1))
 plt.xticks(rotation=45, ha='right')
 create_custom_legend(ax1, thematic_df, 'Description')
 plt.tight_layout()
@@ -157,15 +161,14 @@ plt.ylabel('')
 plt.tight_layout()
 plt.show()
 
-# Bar Chart for Suggestions for Improvement
 plt.figure(figsize=(14, 10))
 suggestions_grouped = suggestions_df.groupby(['Suggestions for Improvement', 'Description'])['Count of Participants'].sum().unstack().fillna(0)
 suggestions_colors = [color_palette[desc] for desc in suggestions_grouped.columns]
-ax2 = suggestions_grouped.plot(kind='barh', stacked=True, color=suggestions_colors, figsize=(14, 12))
+ax2 = suggestions_grouped.plot(kind='barh', stacked=True, color=suggestions_colors, figsize=(14, 10))
 plt.title('Suggestions for Improvement in Hybrid Meetings', fontsize=14)
 plt.xlabel('Count of Participants', fontsize=12)
-plt.ylabel('Suggestions for Improvement', fontsize=10)
-plt.xticks(range(0, int(suggestions_grouped.values.max().sum()) + 2, 1))  # Adjusting the x-ticks to show full scale
+plt.ylabel('Suggestions for Improvement', fontsize=12)
+plt.xticks(range(0, int(suggestions_grouped.values.max().sum()) + 2, 1))
 plt.xlim(0, int(suggestions_grouped.values.max().sum()) + 1)
 create_custom_legend(ax2, suggestions_df, 'Description', use_theme=False)
 plt.tight_layout()
